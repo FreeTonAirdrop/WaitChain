@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaitChain - WTCN Airdrop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .wallet-info {
+            background-color: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .wallet-info i {
+            margin-right: 5px;
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logout-btn:hover {
+            color: var(--accent-color);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem 0;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: none;
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .token-count {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .referral-code {
+            background-color: var(--light-color);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .referral-code:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .task-completed {
+            background-color: #e8f5e9;
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .countdown {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">WaitChain</a>
+            <div id="userMenu" class="user-menu" style="display: none;">
+                <div class="wallet-info">
+                    <i class="fas fa-wallet"></i>
+                    <span id="navWalletAddress"></span>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+            <button id="joinAirdropNavBtn" class="btn btn-outline-light ms-auto">Join Airdrop</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">WaitChain Airdrop</h1>
+            <p class="lead mb-4">Join our WTCN token airdrop and earn up to 1000 WTCN tokens plus referral bonuses!</p>
+            <div class="d-flex justify-content-center gap-3">
+                <button class="btn btn-light btn-lg" id="joinAirdropBtn">Join Airdrop Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row">
+            <!-- User Dashboard -->
+            <div class="col-lg-8">
+                <div class="card mb-4" id="walletSection" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="mb-0">Your Wallet</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h6>Your BNB Address</h6>
+                                <p class="text-muted" id="userWalletAddress"></p>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h6>Referral Code</h6>
+                                <div class="referral-code" id="userReferralCode" onclick="copyReferralCode()">
+                                    <span id="referralCodeText"></span>
+                                    <i class="fas fa-copy ms-2"></i>
+                                </div>
+                                <small class="text-muted mt-1 d-block">Click to copy</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h6>Total WTCN Earned</h6>
+                                <div class="token-count" id="totalTokens">0</div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h6>Referral Count</h6>
+                                <div class="token-count" id="referralCount">0</div>
+                                <small class="text-muted">50 WTCN per referral</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Join Airdrop Form -->
+                <div class="card mb-4" id="joinAirdropForm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Join WaitChain Airdrop</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="walletForm">
+                            <div class="mb-3">
+                                <label for="walletAddress" class="form-label">Your BNB Wallet Address</label>
+                                <input type="text" class="form-control" id="walletAddress" placeholder="Enter your BNB address" required>
+                                <div class="form-text">We only accept BNB Chain addresses (BEP-20)</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="referralCode" class="form-label">Referral Code (Optional)</label>
+                                <input type="text" class="form-control" id="referralCode" placeholder="Enter referral code if any">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Join Airdrop</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tasks Section -->
+                <div class="card mb-4" id="tasksSection" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="mb-0">Complete Tasks to Earn More WTCN</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="task-item" id="dailyCheckTask">
+                            <div>
+                                <h6 class="mb-1">Daily Check-in</h6>
+                                <small class="text-muted" id="dailyCheckStatus">Earn 24 WTCN every 24 hours</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" id="dailyCheckBtn">Start</button>
+                        </div>
+                        
+                        <div class="task-item" id="telegramTask">
+                            <div>
+                                <h6 class="mb-1">Join Telegram Channel</h6>
+                                <small class="text-muted" id="telegramStatus">Earn 50 WTCN</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" id="telegramBtn">Start</button>
+                        </div>
+                        
+                        <div class="task-item" id="whatsappTask">
+                            <div>
+                                <h6 class="mb-1">Join WhatsApp Group</h6>
+                                <small class="text-muted" id="whatsappStatus">Earn 50 WTCN</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" id="whatsappBtn">Start</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referral Section -->
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Referral Program</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Invite friends to join WaitChain and earn 50 WTCN for each successful referral.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Referral Code</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="referralCodeDisplay" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Share your code with friends. When they join using your code, you'll earn 50 WTCN.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Countdown Timer -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Next Daily Check-in</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="countdown" id="dailyCheckCountdown">00:00:00</div>
+                        <small class="text-muted">Time remaining until next check-in</small>
+                    </div>
+                </div>
+
+                <!-- Token Info -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">WTCN Token Info</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Token Name
+                                <span class="badge bg-primary rounded-pill">WaitChain</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Symbol
+                                <span class="badge bg-primary rounded-pill">WTCN</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Blockchain
+                                <span class="badge bg-primary rounded-pill">BNB Chain</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Total Supply
+                                <span class="badge bg-primary rounded-pill">1,000,000,000</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">About WaitChain</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <h4>What is WaitChain?</h4>
+                    <p>WaitChain is a revolutionary blockchain platform that aims to provide fast, secure, and scalable solutions for decentralized applications. Our native token, WTCN, powers the ecosystem and enables various functionalities.</p>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <h4>Why Join the Airdrop?</h4>
+                    <p>By participating in our airdrop, you'll get early access to WTCN tokens before they hit major exchanges. This is your chance to be part of our growing community and benefit from future developments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">How It Works</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block mb-3">
+                                <i class="fas fa-wallet text-primary fa-2x"></i>
+                            </div>
+                            <h5>1. Connect Your Wallet</h5>
+                            <p>Enter your BNB Chain (BEP-20) wallet address to register for the airdrop.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block mb-3">
+                                <i class="fas fa-tasks text-primary fa-2x"></i>
+                            </div>
+                            <h5>2. Complete Tasks</h5>
+                            <p>Perform simple tasks like daily check-ins and social media follows to earn more tokens.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block mb-3">
+                                <i class="fas fa-users text-primary fa-2x"></i>
+                            </div>
+                            <h5>3. Invite Friends</h5>
+                            <p>Share your referral code to earn bonus tokens for each friend who joins.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5>WaitChain</h5>
+                    <p>The next generation blockchain platform with fast transactions and low fees.</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5>Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Home</a></li>
+                        <li><a href="#about" class="text-white">About</a></li>
+                        <li><a href="#how-it-works" class="text-white">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Connect</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white"><i class="fab fa-telegram me-2"></i> Telegram</a></li>
+                        <li><a href="#" class="text-white"><i class="fab fa-twitter me-2"></i> Twitter</a></li>
+                        <li><a href="#" class="text-white"><i class="fab fa-discord me-2"></i> Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3" style="border-color: rgba(255,255,255,0.1);">
+            <div class="text-center">
+                <small>&copy; 2023 WaitChain. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Admin Login Modal -->
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Admin Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="adminLoginForm">
+                        <div class="mb-3">
+                            <label for="adminUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="adminUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="adminPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wallet Connected Modal -->
+    <div class="modal fade" id="walletConnectedModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Welcome to WaitChain!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Your BNB wallet has been successfully connected!
+                    </div>
+                    <p>You've received <strong id="initialTokens">100</strong> WTCN tokens for joining the airdrop.</p>
+                    <p>Start completing tasks and inviting friends to earn more tokens!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Check-in Modal -->
+    <div class="modal fade" id="dailyCheckModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Daily Check-in</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="dailyCheckSuccess" style="display: none;">
+                        <i class="fas fa-check-circle me-2"></i>
+                        You've earned 24 WTCN for today's check-in!
+                    </div>
+                    <div class="alert alert-info" id="dailyCheckInfo">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Check in every 24 hours to earn 24 WTCN tokens.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskModalTitle">Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="taskSuccess" style="display: none;">
+                        <i class="fas fa-check-circle me-2"></i>
+                        You've earned 50 WTCN for completing this task!
+                    </div>
+                    <div id="taskContent">
+                        <!-- Content will be loaded dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="completeTaskBtn">Complete Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4UbW_Iy4kUWH3V70Q1mWCI4-_KFk6ku4",
+            authDomain: "onlinewark-a0147.firebaseapp.com",
+            databaseURL: "https://onlinewark-a0147-default-rtdb.firebaseio.com",
+            projectId: "onlinewark-a0147",
+            storageBucket: "onlinewark-a0147.appspot.com",
+            messagingSenderId: "92155538620",
+            appId: "1:92155538620:android:5e198a8eea6bf17f61f4b9"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+
+        // DOM elements
+        const joinAirdropBtn = document.getElementById('joinAirdropBtn');
+        const joinAirdropNavBtn = document.getElementById('joinAirdropNavBtn');
+        const walletForm = document.getElementById('walletForm');
+        const walletAddressInput = document.getElementById('walletAddress');
+        const referralCodeInput = document.getElementById('referralCode');
+        const walletSection = document.getElementById('walletSection');
+        const joinAirdropForm = document.getElementById('joinAirdropForm');
+        const userWalletAddress = document.getElementById('userWalletAddress');
+        const referralCodeText = document.getElementById('referralCodeText');
+        const totalTokens = document.getElementById('totalTokens');
+        const referralCount = document.getElementById('referralCount');
+        const referralCodeDisplay = document.getElementById('referralCodeDisplay');
+        const tasksSection = document.getElementById('tasksSection');
+        const dailyCheckBtn = document.getElementById('dailyCheckBtn');
+        const telegramBtn = document.getElementById('telegramBtn');
+        const whatsappBtn = document.getElementById('whatsappBtn');
+        const dailyCheckCountdown = document.getElementById('dailyCheckCountdown');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminLoginForm = document.getElementById('adminLoginForm');
+        const adminUsername = document.getElementById('adminUsername');
+        const adminPassword = document.getElementById('adminPassword');
+        const dailyCheckStatus = document.getElementById('dailyCheckStatus');
+        const telegramStatus = document.getElementById('telegramStatus');
+        const whatsappStatus = document.getElementById('whatsappStatus');
+        const userMenu = document.getElementById('userMenu');
+        const navWalletAddress = document.getElementById('navWalletAddress');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Modals
+        const adminLoginModal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
+        const walletConnectedModal = new bootstrap.Modal(document.getElementById('walletConnectedModal'));
+        const dailyCheckModal = new bootstrap.Modal(document.getElementById('dailyCheckModal'));
+        const taskModal = new bootstrap.Modal(document.getElementById('taskModal'));
+        const taskModalTitle = document.getElementById('taskModalTitle');
+        const taskContent = document.getElementById('taskContent');
+        const taskSuccess = document.getElementById('taskSuccess');
+        const completeTaskBtn = document.getElementById('completeTaskBtn');
+        const dailyCheckSuccess = document.getElementById('dailyCheckSuccess');
+
+        // Global variables
+        let currentUser = null;
+        let currentTask = null;
+        let nextCheckInTime = 0;
+        let countdownInterval = null;
+
+        // Initialize the app
+        function initApp() {
+            // Check if user is already registered
+            const savedWallet = localStorage.getItem('wtcn_wallet');
+            if (savedWallet) {
+                loadUserData(savedWallet);
+            }
+
+            // Set up event listeners
+            joinAirdropBtn.addEventListener('click', () => {
+                document.getElementById('joinAirdropForm').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            joinAirdropNavBtn.addEventListener('click', () => {
+                document.getElementById('joinAirdropForm').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            walletForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                registerWallet();
+            });
+
+            dailyCheckBtn.addEventListener('click', () => {
+                handleDailyCheck();
+            });
+
+            telegramBtn.addEventListener('click', () => {
+                showTaskModal('telegram');
+            });
+
+            whatsappBtn.addEventListener('click', () => {
+                showTaskModal('whatsapp');
+            });
+
+            adminLoginBtn.addEventListener('click', () => {
+                adminLoginModal.show();
+            });
+
+            adminLoginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleAdminLogin();
+            });
+
+            completeTaskBtn.addEventListener('click', () => {
+                completeTask(currentTask);
+            });
+
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+
+        // Register wallet with Firebase
+        function registerWallet() {
+            const walletAddress = walletAddressInput.value.trim();
+            const referralCode = referralCodeInput.value.trim();
+
+            if (!walletAddress) {
+                alert('Please enter your BNB wallet address');
+                return;
+            }
+
+            // Simple BNB address validation (starts with 0x and 42 chars)
+            if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+                alert('Please enter a valid BNB wallet address');
+                return;
+            }
+
+            // Check if wallet is already registered
+            database.ref('users').orderByChild('wallet').equalTo(walletAddress).once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        alert('This wallet is already registered');
+                        return;
+                    }
+
+                    // Generate a random referral code (6 alphanumeric characters)
+                    const referralCode = generateReferralCode();
+                    const initialTokens = Math.floor(Math.random() * (1000 - 100 + 1)) + 100; // Random between 100-1000
+
+                    // Create user data
+                    const userData = {
+                        wallet: walletAddress,
+                        referralCode: referralCode,
+                        tokens: initialTokens,
+                        referralCount: 0,
+                        referrals: {},
+                        tasks: {
+                            dailyCheck: {
+                                completed: false,
+                                lastCheckIn: 0
+                            },
+                            telegram: {
+                                completed: false
+                            },
+                            whatsapp: {
+                                completed: false
+                            }
+                        },
+                        createdAt: firebase.database.ServerValue.TIMESTAMP
+                    };
+
+                    // Save user data
+                    const newUserRef = database.ref('users').push();
+                    newUserRef.set(userData)
+                        .then(() => {
+                            // Handle referral if any
+                            if (referralCode) {
+                                processReferral(referralCode, newUserRef.key);
+                            }
+
+                            // Save wallet to local storage
+                            localStorage.setItem('wtcn_wallet', walletAddress);
+
+                            // Update UI
+                            loadUserData(walletAddress);
+
+                            // Show success modal
+                            document.getElementById('initialTokens').textContent = initialTokens;
+                            walletConnectedModal.show();
+                        })
+                        .catch((error) => {
+                            console.error('Error saving user data:', error);
+                            alert('An error occurred. Please try again.');
+                        });
+                })
+                .catch((error) => {
+                    console.error('Error checking wallet:', error);
+                    alert('An error occurred. Please try again.');
+                });
+        }
+
+        // Process referral
+        function processReferral(referralCode, newUserId) {
+            database.ref('users').orderByChild('referralCode').equalTo(referralCode).once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const referrerData = snapshot.val();
+                        const referrerId = Object.keys(referrerData)[0];
+                        
+                        // Add referral to referrer's data
+                        const updates = {};
+                        updates[`users/${referrerId}/referrals/${newUserId}`] = true;
+                        updates[`users/${referrerId}/referralCount`] = firebase.database.ServerValue.increment(1);
+                        updates[`users/${referrerId}/tokens`] = firebase.database.ServerValue.increment(50);
+                        
+                        return database.ref().update(updates);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error processing referral:', error);
+                });
+        }
+
+        // Load user data
+        function loadUserData(walletAddress) {
+            database.ref('users').orderByChild('wallet').equalTo(walletAddress).once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        const userId = Object.keys(userData)[0];
+                        currentUser = { id: userId, ...userData[userId] };
+
+                        // Update UI
+                        userWalletAddress.textContent = currentUser.wallet;
+                        navWalletAddress.textContent = shortenAddress(currentUser.wallet);
+                        referralCodeText.textContent = currentUser.referralCode;
+                        referralCodeDisplay.value = currentUser.referralCode;
+                        totalTokens.textContent = currentUser.tokens;
+                        referralCount.textContent = currentUser.referralCount || 0;
+
+                        // Show wallet section and tasks, hide join form and button
+                        walletSection.style.display = 'block';
+                        tasksSection.style.display = 'block';
+                        joinAirdropForm.style.display = 'none';
+                        joinAirdropBtn.style.display = 'none';
+                        joinAirdropNavBtn.style.display = 'none';
+                        userMenu.style.display = 'flex';
+
+                        // Update task statuses
+                        updateTaskStatuses();
+
+                        // Start countdown for daily check-in
+                        startDailyCheckCountdown();
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error loading user data:', error);
+                });
+        }
+
+        // Update task statuses
+        function updateTaskStatuses() {
+            if (!currentUser) return;
+
+            // Daily check-in
+            if (currentUser.tasks.dailyCheck.completed) {
+                dailyCheckBtn.textContent = 'Completed';
+                dailyCheckBtn.disabled = true;
+                dailyCheckBtn.classList.remove('btn-primary');
+                dailyCheckBtn.classList.add('btn-success');
+            }
+
+            // Telegram task
+            if (currentUser.tasks.telegram.completed) {
+                telegramBtn.textContent = 'Completed';
+                telegramBtn.disabled = true;
+                telegramBtn.classList.remove('btn-primary');
+                telegramBtn.classList.add('btn-success');
+                telegramStatus.textContent = 'Completed - 50 WTCN earned';
+            }
+
+            // WhatsApp task
+            if (currentUser.tasks.whatsapp.completed) {
+                whatsappBtn.textContent = 'Completed';
+                whatsappBtn.disabled = true;
+                whatsappBtn.classList.remove('btn-primary');
+                whatsappBtn.classList.add('btn-success');
+                whatsappStatus.textContent = 'Completed - 50 WTCN earned';
+            }
+        }
+
+        // Handle daily check-in
+        function handleDailyCheck() {
+            const now = Date.now();
+            const lastCheckIn = currentUser.tasks.dailyCheck.lastCheckIn || 0;
+            
+            // Check if 24 hours have passed since last check-in
+            if (now - lastCheckIn < 24 * 60 * 60 * 1000) {
+                const remainingTime = 24 * 60 * 60 * 1000 - (now - lastCheckIn);
+                nextCheckInTime = now + remainingTime;
+                startDailyCheckCountdown();
+                return;
+            }
+
+            // Update user data
+            const updates = {};
+            updates[`users/${currentUser.id}/tokens`] = firebase.database.ServerValue.increment(24);
+            updates[`users/${currentUser.id}/tasks/dailyCheck/lastCheckIn`] = now;
+
+            database.ref().update(updates)
+                .then(() => {
+                    // Update local data
+                    currentUser.tokens += 24;
+                    currentUser.tasks.dailyCheck.lastCheckIn = now;
+                    
+                    // Update UI
+                    totalTokens.textContent = currentUser.tokens;
+                    dailyCheckSuccess.style.display = 'block';
+                    
+                    // Show success in modal
+                    dailyCheckModal.show();
+                    
+                    // Set next check-in time (24 hours from now)
+                    nextCheckInTime = now + 24 * 60 * 60 * 1000;
+                    startDailyCheckCountdown();
+                })
+                .catch((error) => {
+                    console.error('Error updating daily check-in:', error);
+                    alert('An error occurred. Please try again.');
+                });
+        }
+
+        // Start daily check countdown
+        function startDailyCheckCountdown() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            const lastCheckIn = currentUser.tasks.dailyCheck.lastCheckIn || 0;
+            const now = Date.now();
+            
+            if (lastCheckIn === 0 || now - lastCheckIn >= 24 * 60 * 60 * 1000) {
+                dailyCheckCountdown.textContent = 'Ready to check-in';
+                return;
+            }
+
+            nextCheckInTime = lastCheckIn + 24 * 60 * 60 * 1000;
+            
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        // Update countdown display
+        function updateCountdown() {
+            const now = Date.now();
+            const diff = nextCheckInTime - now;
+            
+            if (diff <= 0) {
+                clearInterval(countdownInterval);
+                dailyCheckCountdown.textContent = 'Ready to check-in';
+                return;
+            }
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            dailyCheckCountdown.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Show task modal
+        function showTaskModal(task) {
+            currentTask = task;
+            taskSuccess.style.display = 'none';
+            
+            if (task === 'telegram') {
+                taskModalTitle.textContent = 'Join Telegram Channel';
+                taskContent.innerHTML = `
+                    <p>To complete this task and earn 50 WTCN:</p>
+                    <ol>
+                        <li>Join our official Telegram channel</li>
+                        <li>Stay in the channel for at least 5 minutes</li>
+                    </ol>
+                    <a href="https://t.me/waitchain" target="_blank" class="btn btn-primary w-100">
+                        <i class="fab fa-telegram me-2"></i> Join Telegram Channel
+                    </a>
+                `;
+            } else if (task === 'whatsapp') {
+                taskModalTitle.textContent = 'Join WhatsApp Group';
+                taskContent.innerHTML = `
+                    <p>To complete this task and earn 50 WTCN:</p>
+                    <ol>
+                        <li>Join our official WhatsApp group</li>
+                        <li>Stay in the group for at least 5 minutes</li>
+                    </ol>
+                    <a href="https://chat.whatsapp.com/waitchain" target="_blank" class="btn btn-success w-100">
+                        <i class="fab fa-whatsapp me-2"></i> Join WhatsApp Group
+                    </a>
+                `;
+            }
+            
+            taskModal.show();
+        }
+
+        // Complete task
+        function completeTask(task) {
+            if (!currentUser || !task) return;
+
+            // Check if task is already completed
+            if (currentUser.tasks[task].completed) {
+                alert('This task is already completed');
+                return;
+            }
+
+            // Update user data
+            const updates = {};
+            updates[`users/${currentUser.id}/tokens`] = firebase.database.ServerValue.increment(50);
+            updates[`users/${currentUser.id}/tasks/${task}/completed`] = true;
+
+            database.ref().update(updates)
+                .then(() => {
+                    // Update local data
+                    currentUser.tokens += 50;
+                    currentUser.tasks[task].completed = true;
+                    
+                    // Update UI
+                    totalTokens.textContent = currentUser.tokens;
+                    taskSuccess.style.display = 'block';
+                    
+                    // Update task button
+                    if (task === 'telegram') {
+                        telegramBtn.textContent = 'Completed';
+                        telegramBtn.disabled = true;
+                        telegramBtn.classList.remove('btn-primary');
+                        telegramBtn.classList.add('btn-success');
+                        telegramStatus.textContent = 'Completed - 50 WTCN earned';
+                    } else if (task === 'whatsapp') {
+                        whatsappBtn.textContent = 'Completed';
+                        whatsappBtn.disabled = true;
+                        whatsappBtn.classList.remove('btn-primary');
+                        whatsappBtn.classList.add('btn-success');
+                        whatsappStatus.textContent = 'Completed - 50 WTCN earned';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error completing task:', error);
+                    alert('An error occurred. Please try again.');
+                });
+        }
+
+        // Handle admin login
+        function handleAdminLogin() {
+            const username = adminUsername.value.trim();
+            const password = adminPassword.value.trim();
+
+            if (username === 'Dilbar' && password === 'DilbarKing') {
+                // Successful login
+                adminLoginModal.hide();
+                window.location.href = 'admin.html';
+            } else {
+                alert('Invalid username or password');
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            localStorage.removeItem('wtcn_wallet');
+            window.location.reload();
+        }
+
+        // Copy referral code
+        function copyReferralCode() {
+            if (!currentUser) return;
+            
+            navigator.clipboard.writeText(currentUser.referralCode)
+                .then(() => {
+                    alert('Referral code copied to clipboard!');
+                })
+                .catch((err) => {
+                    console.error('Failed to copy: ', err);
+                });
+        }
+
+        // Shorten wallet address for display
+        function shortenAddress(address) {
+            if (!address) return '';
+            return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+        }
+
+        // Generate random referral code (6 alphanumeric characters)
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Check for referral code in URL
+        function checkForReferral() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            if (refCode) {
+                referralCodeInput.value = refCode;
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            checkForReferral();
+        });
+    </script>
+</body>
+</html> 
